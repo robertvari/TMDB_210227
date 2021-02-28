@@ -16,25 +16,14 @@ Item {
             Layout.fillWidth: true
 
             // filter panel
-            Rectangle{
+            FilterPanel{
                 Layout.fillHeight: true
-                implicitWidth: 250
-                color: "lightblue"
-
-                Text{
-                    text: "Filter panel..."
-                }
             }
 
             // grid view
-            Rectangle{
+            MovieGridView{
                 Layout.fillHeight: true
                 Layout.fillWidth: true
-                color: "lightgreen"
-
-                Text{
-                    text: "Grid view"
-                }
             }
         }
     }
