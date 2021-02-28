@@ -10,6 +10,8 @@ class MovieDB:
     def __init__(self):
         self.app = QGuiApplication(sys.argv)
         self.engine = QQmlApplicationEngine()
+        self.context = self.engine.rootContext()
+
         self.engine.load(os.path.join(os.path.dirname(__file__), "main.qml"))
 
         if not self.engine.rootObjects():
