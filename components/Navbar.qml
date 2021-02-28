@@ -4,9 +4,7 @@ Rectangle{
     implicitHeight: 64
     color: "#032541"
 
-    Text{
-        text: "TMDB LOGO"
-        color: "white"
-        font.pixelSize: 30
+    Image {
+        source: Resources.get_image("logo.svg")
     }
 }
