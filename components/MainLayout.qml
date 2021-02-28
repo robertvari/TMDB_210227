@@ -9,12 +9,34 @@ Item {
         // navbar
         Navbar{
             Layout.fillWidth: true
-            Layout.alignment: Qt.AlignTop
         }
 
-        // rowLayout
+        RowLayout{
+            Layout.fillHeight: true
+            Layout.fillWidth: true
+
             // filter panel
+            Rectangle{
+                Layout.fillHeight: true
+                implicitWidth: 250
+                color: "lightblue"
+
+                Text{
+                    text: "Filter panel..."
+                }
+            }
+
             // grid view
+            Rectangle{
+                Layout.fillHeight: true
+                Layout.fillWidth: true
+                color: "lightgreen"
+
+                Text{
+                    text: "Grid view"
+                }
+            }
+        }
     }
 
 }
