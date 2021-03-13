@@ -24,7 +24,22 @@ class MovieList(QAbstractListModel):
         result = self.movie.popular(page=self.current_page)
 
         for i in result["results"]:
-            self.insert_movie(i)
+            self.insert_movie(self._serialized(i))
+
+        pass
+
+    def _serialized(self, movie_data):
+        def get_vote_average():
+            if not movie_data.get("vote_average"):
+                return 0
+            return int(movie_data.get("vote_average") * 10)
+
+        return {
+            "title": movie_data.get("title"),
+            "release_date": movie_data.get("release_date"),
+            "vote_average": get_vote_average(),
+            "poster_path": movie_data.get("poster_path")
+        }
 
     def insert_movie(self, movie_data):
         self.beginInsertRows(QModelIndex(), self.rowCount(), self.rowCount())
