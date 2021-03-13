@@ -8,20 +8,20 @@ Item {
         ListElement {
             title: "Raya and the Last Dragon"
             release_date: "2021-03-03"
-            vote_average: 8.6
+            vote_average: 86
             poster_path: 'https://image.tmdb.org/t/p/w300/lPsD10PP4rgUGiGR4CCXA6iY0QQ.jpg'
         }
 
         ListElement {
             title: "Tom & Jerry"
             release_date: "2021-02-11"
-            vote_average: 7.7
+            vote_average: 77
             poster_path: 'https://image.tmdb.org/t/p/w300/6KErczPBROQty7QoIsaa6wJYXZi.jpg'
         }
         ListElement {
             title: "Coming 2 America"
             release_date: "2021-03-05"
-            vote_average: 7.1
+            vote_average: 71
             poster_path: 'https://image.tmdb.org/t/p/w300/vt77Xjy3NI1sMOfbO8I3BpdsFbg.jpg'
         }
     }
@@ -36,7 +36,8 @@ Item {
         cellHeight: 363
 
         delegate: Rectangle {
-            color: "lightgray"
+            color: "white"
+            border.color: "lightgray"
             width: grid_view.cellWidth -10
             height: grid_view.cellHeight -10
             radius: 10
@@ -58,18 +59,32 @@ Item {
 
                     ColumnLayout{
                         anchors.fill: parent
+                        anchors.margins: 5
 
-                        Text{
+                        Item{implicitHeight: 10}
+
+                        Text {
                             text: title
+                            font.pixelSize: 16
+                            font.bold: true
+
+                            Layout.fillWidth: true
+                            wrapMode: Text.WrapAtWordBoundaryOrAnywhere
                         }
 
                         Text{
                             text: release_date
+                            color: "gray"
                         }
 
-                        Text{
-                            text: vote_average
-                        }
+                        Item{Layout.fillHeight: true}
+                    }
+
+                    PopularityProgress{
+                        x: -8
+                        y: -45
+
+                        percentage: vote_average
                     }
                 }
             }
