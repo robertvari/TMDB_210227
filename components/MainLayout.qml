@@ -14,6 +14,7 @@ Item {
         RowLayout{
             Layout.fillHeight: true
             Layout.fillWidth: true
+            Layout.margins: 10
 
             // filter panel
             FilterPanel{

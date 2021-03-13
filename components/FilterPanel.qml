@@ -1,10 +1,31 @@
 import QtQuick 2.0
+import QtQuick.Layouts 1.15
+import QtQuick.Controls 1.4
 
-Rectangle{
+
+Item {
     implicitWidth: 250
-    color: "lightblue"
 
-    Text{
-        text: "Filter panel..."
+    ColumnLayout{
+        anchors.fill: parent
+
+        TextField{
+            placeholderText: "Search..."
+            Layout.fillWidth: true
+        }
+
+        Text{
+            text: "Title"
+        }
+
+        Text{
+            text: "Release date"
+        }
+
+        Text{
+            text: "Rating"
+        }
+
+        Item {Layout.fillHeight: true}
     }
 }
