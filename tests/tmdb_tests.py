@@ -11,5 +11,8 @@ tmdb.API_KEY = os.getenv('TMDB_API_KEY')
 movie = tmdb.Movies()
 result = movie.popular()
 
-for i in result["results"]:
-    print(i)
+for i in result["results"][:3]:
+    print(i.get("title"))
+    print(i.get('release_date'))
+    print(i.get('vote_average'))
+    print(f"{settings.IMAGE_SERVER}{i.get('poster_path')}")
