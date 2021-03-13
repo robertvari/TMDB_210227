@@ -16,6 +16,7 @@ def download_image(image_url, backdrop=False):
     if backdrop:
         poster_url = f'{settings.IMAGE_BACKDROP_SERVER}{image_url}'
 
+    print(f"Downloading poster: {image_url}")
     response = requests.get(poster_url, stream=True)
 
     if response.status_code == 200:

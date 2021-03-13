@@ -1,7 +1,8 @@
-from PySide2.QtCore import QAbstractListModel, QModelIndex, Qt
+from PySide2.QtCore import QAbstractListModel, QModelIndex, Qt, QUrl
 import tmdbsimple as tmdb
 from dotenv import load_dotenv
 from utilities import settings
+from utilities.downloader import download_image
 import os, time
 
 ENV_PATH = os.path.join(settings.APP_ROOT, ".env")
@@ -24,7 +25,6 @@ class MovieList(QAbstractListModel):
         result = self.movie.popular(page=self.current_page)
 
         for i in result["results"]:
-            time.sleep(1)
             self.insert_movie(self._serialized(i))
 
     def _serialized(self, movie_data):
@@ -33,11 +33,15 @@ class MovieList(QAbstractListModel):
                 return 0
             return int(movie_data.get("vote_average") * 10)
 
+        def cache_image():
+            image_path = download_image(movie_data.get("poster_path"))
+            return QUrl().fromLocalFile(image_path)
+
         return {
             "title": movie_data.get("title"),
             "release_date": movie_data.get("release_date"),
             "vote_average": get_vote_average(),
-            "poster_path": movie_data.get("poster_path")
+            "poster": cache_image()
         }
 
     def insert_movie(self, movie_data):

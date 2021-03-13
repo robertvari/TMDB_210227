@@ -47,7 +47,7 @@ Item {
                 anchors.fill: parent
 
                 Image{
-                    source: Resources.get_image("poster.jpg")
+                    source: movie_item.poster
                     Layout.fillWidth: true
                     Layout.fillHeight: true
 
