@@ -29,9 +29,10 @@ Item {
 
     GridView {
         id: grid_view
+        clip: true
 
         anchors.fill: parent
-        model: my_list
+        model: MovieList
         cellWidth: 175
         cellHeight: 363
 
@@ -64,7 +65,7 @@ Item {
                         Item{implicitHeight: 10}
 
                         Text {
-                            text: title
+                            text: movie_item.title
                             font.pixelSize: 16
                             font.bold: true
 
@@ -73,7 +74,7 @@ Item {
                         }
 
                         Text{
-                            text: release_date
+                            text: movie_item.release_date
                             color: "gray"
                         }
 
@@ -84,7 +85,7 @@ Item {
                         x: -8
                         y: -45
 
-                        percentage: vote_average
+                        percentage: movie_item.vote_average
                     }
                 }
             }

@@ -6,6 +6,7 @@ from PySide2.QtGui import QGuiApplication
 from PySide2.QtQml import QQmlApplicationEngine
 
 from modules.resource_loader import Resources
+from modules.movie_list import MovieList
 
 
 class MovieDB:
@@ -16,6 +17,9 @@ class MovieDB:
 
         self.resource_loader = Resources()
         self.context.setContextProperty("Resources", self.resource_loader)
+
+        self.movie_list = MovieList()
+        self.context.setContextProperty("MovieList", self.movie_list)
 
         self.engine.load(os.path.join(os.path.dirname(__file__), "main.qml"))
 

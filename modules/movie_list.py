@@ -2,7 +2,7 @@ from PySide2.QtCore import QAbstractListModel, QModelIndex, Qt
 import tmdbsimple as tmdb
 from dotenv import load_dotenv
 from utilities import settings
-import os
+import os, time
 
 ENV_PATH = os.path.join(settings.APP_ROOT, ".env")
 load_dotenv(ENV_PATH)
@@ -24,9 +24,8 @@ class MovieList(QAbstractListModel):
         result = self.movie.popular(page=self.current_page)
 
         for i in result["results"]:
+            time.sleep(1)
             self.insert_movie(self._serialized(i))
-
-        pass
 
     def _serialized(self, movie_data):
         def get_vote_average():
