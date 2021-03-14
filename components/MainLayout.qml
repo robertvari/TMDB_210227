@@ -3,6 +3,15 @@ import QtQuick.Layouts 1.15
 
 
 Item {
+    states: [
+        State {
+            name: "listView"
+            PropertyChanges {
+                target: list_layout
+            }
+        }
+    ]
+
     ColumnLayout{
         anchors.fill: parent
 
@@ -11,26 +20,33 @@ Item {
             Layout.fillWidth: true
         }
 
-        RowLayout{
+        MovieDetails{
+            id: movie_details_item
             Layout.fillHeight: true
             Layout.fillWidth: true
-            Layout.margins: 10
+            visible: false
+        }
 
-            // filter panel
-            FilterPanel{
-                Layout.fillHeight: true
-            }
+        Item {
+            id: list_view_item
+            Layout.fillHeight: true
+            Layout.fillWidth: true
+            visible: true
 
-            // grid view
-//            MovieGridView{
-//                Layout.fillHeight: true
-//                Layout.fillWidth: true
-//            }
+            RowLayout {
+                anchors.fill: parent
+                anchors.margins: 20
 
-            // movie list view
-            MovieListView{
-                Layout.fillHeight: true
-                Layout.fillWidth: true
+                // filter panel
+                FilterPanel{
+                    Layout.fillHeight: true
+                }
+
+                // grid view
+                MovieGridView{
+                    Layout.fillHeight: true
+                    Layout.fillWidth: true
+                }
             }
         }
     }

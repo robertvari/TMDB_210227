@@ -1,5 +1,5 @@
 from PySide2.QtCore import QAbstractListModel, QModelIndex, Qt, QUrl, \
-    QRunnable, QObject, Signal, QThreadPool
+    QRunnable, QObject, Signal, QThreadPool, Property
 import tmdbsimple as tmdb
 from dotenv import load_dotenv
 from utilities import settings
@@ -13,6 +13,7 @@ tmdb.API_KEY = os.getenv('TMDB_API_KEY')
 
 class MovieList(QAbstractListModel):
     DataRole = Qt.UserRole
+    movie_list_changed = Signal()
 
     def __init__(self):
         super(MovieList, self).__init__()
@@ -45,6 +46,7 @@ class MovieList(QAbstractListModel):
     def insert_movie(self, movie_data):
         self.beginInsertRows(QModelIndex(), self.rowCount(), self.rowCount())
         self.items.append(movie_data)
+        self.movie_list_changed.emit()
         self.endInsertRows()
 
     def rowCount(self, parent=QModelIndex):
@@ -60,6 +62,11 @@ class MovieList(QAbstractListModel):
             MovieList.DataRole: b'movie_item'
         }
 
+    def _get_movie_count(self):
+        return len(self.items)
+
+    movie_count = Property(int, _get_movie_count, notify=movie_list_changed)
+
 
 class WorkerSignals(QObject):
     finished = Signal(dict)
@@ -73,7 +80,7 @@ class MovieListWorker(QRunnable):
         super(MovieListWorker, self).__init__()
         self.signals = WorkerSignals()
         self.movie = tmdb.Movies()
-        self.max_pages = 20
+        self.max_pages = 1
 
     def _check_movie(self, movie_data):
         if not movie_data.get("poster_path"):
@@ -96,7 +103,7 @@ class MovieListWorker(QRunnable):
 
         current_page = 1
 
-        while current_page < self.max_pages:
+        while current_page <= self.max_pages:
             result = self.movie.popular(page=current_page)
             for movie_data in result["results"]:
                 if not self._check_movie(movie_data):

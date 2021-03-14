@@ -1,10 +1,24 @@
 import QtQuick 2.0
+import QtQuick.Layouts 1.15
 
 Rectangle{
     implicitHeight: 64
     color: "#032541"
 
-    Image {
-        source: Resources.get_image("logo.svg")
+    RowLayout{
+        anchors.fill: parent
+        anchors.margins: 10
+
+        Image {
+            id: logo
+            source: Resources.get_image("logo.svg")
+        }
+
+        Text{
+            text: "Movie count: " + MovieList.movie_count
+            font.pixelSize: 30
+            color: "white"
+            Layout.alignment: Qt.AlignRight
+        }
     }
 }
