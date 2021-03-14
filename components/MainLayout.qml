@@ -19,8 +19,6 @@ Item {
         }
     ]
 
-    state: "detailsView"
-
     ColumnLayout{
         anchors.fill: parent
 

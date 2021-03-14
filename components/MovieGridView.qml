@@ -99,7 +99,10 @@ Item {
                 onEntered: card_background.state = "active"
                 onExited: card_background.state = null
 
-                onClicked: main_layout.state = "detailsView"
+                onClicked: {
+                    main_layout.state = "detailsView"
+                    Movie.set_movie(movie_item.id)
+                }
             }
         }
     }

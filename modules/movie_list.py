@@ -40,7 +40,8 @@ class MovieList(QAbstractListModel):
             "title": movie_data.get("title"),
             "release_date": movie_data.get("release_date"),
             "vote_average": get_vote_average(),
-            "poster": QUrl().fromLocalFile(movie_data["local_poster"])
+            "poster": QUrl().fromLocalFile(movie_data["local_poster"]),
+            "id": movie_data["id"]
         }
 
     def insert_movie(self, movie_data):

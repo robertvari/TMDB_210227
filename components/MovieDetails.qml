@@ -6,9 +6,17 @@ Item {
         anchors.fill: parent
 
         Rectangle{
-            color: "lightblue"
+            color: "black"
             Layout.fillWidth: true
             implicitHeight: 400
+
+            Image {
+                source: Movie.backdrop
+                width: parent.width
+                height: parent.height
+                fillMode: Image.PreserveAspectCrop
+                opacity: 0.2
+            }
 
             RowLayout{
                 anchors.fill: parent
@@ -28,22 +36,26 @@ Item {
                         width: parent.width
 
                         Text{
-                            text: "Move Title"
+                            text: Movie.title
                             font.bold: true
                             font.pixelSize: 30
+                            color: "white"
                         }
 
                         Text {
                             text: "02/11/2021 (US) Drama, Thriller 1h 26m"
+                            color: "white"
                         }
 
                         Text{
                             text: "Overview"
                             font.bold: true
+                            color: "white"
                         }
 
                         Text{
                             text: "Movie overview...."
+                            color: "white"
                         }
                     }
 
@@ -53,7 +65,7 @@ Item {
 
         }
 
-        Text{
+        Text {
             text: "Top Billed Cast"
             font.pixelSize: 20
             font.bold: true
