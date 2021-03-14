@@ -2,30 +2,6 @@ import QtQuick 2.0
 import QtQuick.Layouts 1.15
 
 Item {
-    ListModel {
-        id: my_list
-
-        ListElement {
-            title: "Raya and the Last Dragon"
-            release_date: "2021-03-03"
-            vote_average: 86
-            poster_path: 'https://image.tmdb.org/t/p/w300/lPsD10PP4rgUGiGR4CCXA6iY0QQ.jpg'
-        }
-
-        ListElement {
-            title: "Tom & Jerry"
-            release_date: "2021-02-11"
-            vote_average: 77
-            poster_path: 'https://image.tmdb.org/t/p/w300/6KErczPBROQty7QoIsaa6wJYXZi.jpg'
-        }
-        ListElement {
-            title: "Coming 2 America"
-            release_date: "2021-03-05"
-            vote_average: 71
-            poster_path: 'https://image.tmdb.org/t/p/w300/vt77Xjy3NI1sMOfbO8I3BpdsFbg.jpg'
-        }
-    }
-
 
     GridView {
         id: grid_view

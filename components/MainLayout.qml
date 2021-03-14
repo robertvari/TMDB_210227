@@ -22,7 +22,13 @@ Item {
             }
 
             // grid view
-            MovieGridView{
+//            MovieGridView{
+//                Layout.fillHeight: true
+//                Layout.fillWidth: true
+//            }
+
+            // movie list view
+            MovieListView{
                 Layout.fillHeight: true
                 Layout.fillWidth: true
             }

@@ -73,6 +73,7 @@ class MovieListWorker(QRunnable):
         super(MovieListWorker, self).__init__()
         self.signals = WorkerSignals()
         self.movie = tmdb.Movies()
+        self.max_pages = 20
 
     def _check_movie(self, movie_data):
         if not movie_data.get("poster_path"):
@@ -93,13 +94,18 @@ class MovieListWorker(QRunnable):
         if not os.path.exists(settings.CACHE_FOLDER):
             os.makedirs(settings.CACHE_FOLDER)
 
-        result = self.movie.popular(page=1)
-        for movie_data in result["results"]:
-            if not self._check_movie(movie_data):
-                continue
+        current_page = 1
 
-            movie_data["local_poster"] = download_image(movie_data["poster_path"])
-            self.signals.finished.emit(movie_data)
+        while current_page < self.max_pages:
+            result = self.movie.popular(page=current_page)
+            for movie_data in result["results"]:
+                if not self._check_movie(movie_data):
+                    continue
+
+                movie_data["local_poster"] = download_image(movie_data["poster_path"])
+                self.signals.finished.emit(movie_data)
+
+            current_page += 1
 
     def run(self):
         self._cache_data()
