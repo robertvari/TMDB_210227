@@ -2,4 +2,5 @@
 venv/
 main.pyproject.user
 
-utilities/.env
+.env
+_data_cache/

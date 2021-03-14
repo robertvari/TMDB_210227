@@ -1,4 +1,5 @@
-from PySide2.QtCore import QAbstractListModel, QModelIndex, Qt, QUrl
+from PySide2.QtCore import QAbstractListModel, QModelIndex, Qt, QUrl, \
+    QRunnable, QObject, Signal, QThreadPool
 import tmdbsimple as tmdb
 from dotenv import load_dotenv
 from utilities import settings
@@ -16,16 +17,18 @@ class MovieList(QAbstractListModel):
     def __init__(self):
         super(MovieList, self).__init__()
         self.items = []
-        self.current_page = 1
-        self.movie = tmdb.Movies()
+
+        self.pool = QThreadPool()
+        self.pool.setMaxThreadCount(1)
 
         self._fetch()
 
     def _fetch(self):
-        result = self.movie.popular(page=self.current_page)
+        worker = MovieListWorker()
+        self.pool.start(worker)
 
-        for i in result["results"]:
-            self.insert_movie(self._serialized(i))
+        # for i in result["results"]:
+        #     self.insert_movie(self._serialized(i))
 
     def _serialized(self, movie_data):
         def get_vote_average():
@@ -61,6 +64,29 @@ class MovieList(QAbstractListModel):
         return {
             MovieList.DataRole: b'movie_item'
         }
+
+
+class WorkerSignals(QObject):
+    def __init__(self):
+        super(WorkerSignals, self).__init__()
+
+
+class MovieListWorker(QRunnable):
+    def __init__(self):
+        super(MovieListWorker, self).__init__()
+        self.signals = WorkerSignals()
+        self.movie = tmdb.Movies()
+
+    def _cache_data(self):
+        if not os.path.exists(settings.CACHE_FOLDER):
+            os.makedirs(settings.CACHE_FOLDER)
+
+        result = self.movie.popular(page=1)
+        for movie_data in result["results"]:
+            time.sleep(1)
+
+    def run(self):
+        self._cache_data()
 
 
 if __name__ == '__main__':

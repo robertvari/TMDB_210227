@@ -6,9 +6,6 @@ def download_image(image_url, backdrop=False):
     poster_file_name = image_url[1:]
     poster_path = os.path.join(settings.CACHE_FOLDER, poster_file_name)
 
-    if not os.path.exists(settings.CACHE_FOLDER):
-        os.makedirs(settings.CACHE_FOLDER)
-
     if os.path.exists(poster_path):
         return poster_path
 
