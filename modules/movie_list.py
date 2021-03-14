@@ -25,26 +25,21 @@ class MovieList(QAbstractListModel):
 
     def _fetch(self):
         worker = MovieListWorker()
+        worker.signals.finished.connect(self.process_move_data)
         self.pool.start(worker)
 
-        # for i in result["results"]:
-        #     self.insert_movie(self._serialized(i))
+    def process_move_data(self, movie_data):
+        self.insert_movie(self._serialized(movie_data))
 
     def _serialized(self, movie_data):
         def get_vote_average():
-            if not movie_data.get("vote_average"):
-                return 0
             return int(movie_data.get("vote_average") * 10)
-
-        def cache_image():
-            image_path = download_image(movie_data.get("poster_path"))
-            return QUrl().fromLocalFile(image_path)
 
         return {
             "title": movie_data.get("title"),
             "release_date": movie_data.get("release_date"),
             "vote_average": get_vote_average(),
-            "poster": cache_image()
+            "poster": QUrl().fromLocalFile(movie_data["local_poster"])
         }
 
     def insert_movie(self, movie_data):
@@ -67,6 +62,8 @@ class MovieList(QAbstractListModel):
 
 
 class WorkerSignals(QObject):
+    finished = Signal(dict)
+
     def __init__(self):
         super(WorkerSignals, self).__init__()
 
@@ -77,13 +74,32 @@ class MovieListWorker(QRunnable):
         self.signals = WorkerSignals()
         self.movie = tmdb.Movies()
 
+    def _check_movie(self, movie_data):
+        if not movie_data.get("poster_path"):
+            return False
+
+        if not movie_data.get("vote_average"):
+            return False
+
+        if not movie_data.get("backdrop_path"):
+            return False
+
+        if not movie_data.get("release_date"):
+            return False
+
+        return True
+
     def _cache_data(self):
         if not os.path.exists(settings.CACHE_FOLDER):
             os.makedirs(settings.CACHE_FOLDER)
 
         result = self.movie.popular(page=1)
         for movie_data in result["results"]:
-            time.sleep(1)
+            if not self._check_movie(movie_data):
+                continue
+
+            movie_data["local_poster"] = download_image(movie_data["poster_path"])
+            self.signals.finished.emit(movie_data)
 
     def run(self):
         self._cache_data()
