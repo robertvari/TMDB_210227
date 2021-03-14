@@ -1,9 +1,23 @@
 import QtQuick 2.0
+import QtQuick.Layouts 1.15
 
-Rectangle {
-    color: "lightblue"
+Item {
+    ColumnLayout{
+        anchors.fill: parent
 
-    Text {
-        text: "Movie Details page..."
+        Rectangle{
+            color: "lightblue"
+            Layout.fillWidth: true
+            implicitHeight: 400
+
+            RowLayout{
+                anchors.fill: parent
+                anchors.margins: 20
+            }
+
+        }
+
+        Item{Layout.fillHeight: true}
+
     }
 }

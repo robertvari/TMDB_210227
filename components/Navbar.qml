@@ -12,6 +12,12 @@ Rectangle{
         Image {
             id: logo
             source: Resources.get_image("logo.svg")
+
+            MouseArea{
+                anchors.fill: parent
+                cursorShape: Qt.PointingHandCursor
+                onClicked: main_layout.state = null
+            }
         }
 
         Text{

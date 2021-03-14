@@ -3,11 +3,18 @@ import QtQuick.Layouts 1.15
 
 
 Item {
+    id: main_layout
+
     states: [
         State {
-            name: "listView"
+            name: "detailsView"
             PropertyChanges {
-                target: list_layout
+                target: list_view_item
+                visible: false
+            }
+            PropertyChanges {
+                target: movie_details_item
+                visible: true
             }
         }
     ]

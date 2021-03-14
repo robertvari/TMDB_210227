@@ -1,7 +1,7 @@
 import QtQuick 2.0
 import QtQuick.Layouts 1.15
 
-Item {
+Item {    
     GridView {
         id: grid_view
         clip: true
@@ -98,6 +98,8 @@ Item {
 
                 onEntered: card_background.state = "active"
                 onExited: card_background.state = null
+
+                onClicked: main_layout.state = "detailsView"
             }
         }
     }
