@@ -14,6 +14,7 @@ tmdb.API_KEY = os.getenv('TMDB_API_KEY')
 class MovieList(QAbstractListModel):
     DataRole = Qt.UserRole
     movie_list_changed = Signal()
+    download_started = Signal()
 
     def __init__(self):
         super(MovieList, self).__init__()
@@ -27,6 +28,7 @@ class MovieList(QAbstractListModel):
     def _fetch(self):
         worker = MovieListWorker()
         worker.signals.finished.connect(self.process_move_data)
+        self.download_started.emit()
         self.pool.start(worker)
 
     def process_move_data(self, movie_data):
@@ -66,7 +68,11 @@ class MovieList(QAbstractListModel):
     def _get_movie_count(self):
         return len(self.items)
 
+    def _get_max_download_count(self):
+        return 20
+
     movie_count = Property(int, _get_movie_count, notify=movie_list_changed)
+    max_download_count = Property(int, _get_max_download_count, notify=download_started)
 
 
 class WorkerSignals(QObject):
@@ -109,6 +115,8 @@ class MovieListWorker(QRunnable):
             for movie_data in result["results"]:
                 if not self._check_movie(movie_data):
                     continue
+
+                time.sleep(3)
 
                 movie_data["local_poster"] = download_image(movie_data["poster_path"])
                 self.signals.finished.emit(movie_data)

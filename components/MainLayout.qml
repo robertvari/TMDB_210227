@@ -1,5 +1,6 @@
 import QtQuick 2.0
 import QtQuick.Layouts 1.15
+import "widgets"
 
 
 Item {
@@ -21,10 +22,17 @@ Item {
 
     ColumnLayout{
         anchors.fill: parent
+        spacing: 1
 
         // navbar
         Navbar{
             Layout.fillWidth: true
+        }
+
+        // download progress
+        Progressbar{
+            Layout.fillWidth: true
+            implicitHeight: 5
         }
 
         MovieDetails{
