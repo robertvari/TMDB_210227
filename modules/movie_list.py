@@ -74,12 +74,15 @@ class MovieList(QAbstractListModel):
 
     @Slot(str)
     def refresh_movie_list(self, max_page_count):
-        self._reset()
         self.download_worker.stop_download()
-
         self._max_pages = 1
         if max_page_count:
             self._max_pages = int(max_page_count)
+
+        self.download_worker.signals.download_process_stopped.connect(self._refresh_process)
+
+    def _refresh_process(self):
+        self._reset()
 
         # delete cache folder if exists
         if os.path.exists(settings.CACHE_FOLDER):
@@ -117,6 +120,7 @@ class MovieList(QAbstractListModel):
 class WorkerSignals(QObject):
     movie_data_downloaded = Signal(dict)
     download_process_started = Signal()
+    download_process_stopped = Signal()
     download_process_finished = Signal()
 
     def __init__(self):
@@ -158,12 +162,14 @@ class MovieListWorker(QRunnable):
         while current_page <= self.max_pages:
             if not self._can_download:
                 print("Download stopped at getting next page")
+                self.signals.download_process_stopped.emit()
                 break
 
             result = self.movie.popular(page=current_page)
             for movie_data in result["results"]:
                 if not self._can_download:
                     print("Download stopped at getting movie data.")
+                    self.signals.download_process_stopped.emit()
                     break
 
                 if not self._check_movie(movie_data):
