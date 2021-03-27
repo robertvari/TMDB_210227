@@ -1,5 +1,6 @@
 import QtQuick 2.0
 import QtQuick.Layouts 1.15
+import QtQuick.Controls 1.4
 
 Rectangle{
     implicitHeight: 64
@@ -20,11 +21,31 @@ Rectangle{
             }
         }
 
-        Text{
-            text: "Movie count: " + MovieList.movie_count
-            font.pixelSize: 30
-            color: "white"
-            Layout.alignment: Qt.AlignRight
+        Item{
+            Layout.fillWidth: true
         }
+
+        Text{
+            text: "Max Pages: "
+            color: "white"
+        }
+
+        TextField{
+            id: max_pages_field
+            implicitWidth: 30
+            text: "1"
+            validator: RegExpValidator{regExp: /[0-9]{1,3}/}
+        }
+
+        Button {
+            text: "Refresh"
+            onClicked: MovieList.refresh_movie_list(max_pages_field.text)
+        }
+
+//        Text{
+//            text: "Movie count: " + MovieList.movie_count
+//            color: "white"
+//            Layout.alignment: Qt.AlignRight
+//        }
     }
 }

@@ -1,10 +1,10 @@
 from PySide2.QtCore import QAbstractListModel, QModelIndex, Qt, QUrl, \
-    QRunnable, QObject, Signal, QThreadPool, Property
+    QRunnable, QObject, Signal, QThreadPool, Property, Slot
 import tmdbsimple as tmdb
 from dotenv import load_dotenv
 from utilities import settings
 from utilities.downloader import download_image
-import os, time
+import os, shutil, time
 
 ENV_PATH = os.path.join(settings.APP_ROOT, ".env")
 load_dotenv(ENV_PATH)
@@ -21,7 +21,7 @@ class MovieList(QAbstractListModel):
         super(MovieList, self).__init__()
         self.items = []
         self._is_downloading = False
-        self._max_pages = 10
+        self._max_pages = 1
 
         self.pool = QThreadPool()
         self.pool.setMaxThreadCount(1)
@@ -29,12 +29,18 @@ class MovieList(QAbstractListModel):
         self._fetch()
 
     def _fetch(self):
-        worker = MovieListWorker(self._max_pages)
-        worker.signals.download_process_started.connect(self._downloading_started)
-        worker.signals.movie_data_downloaded.connect(self.process_move_data)
-        worker.signals.download_process_finished.connect(self._downloading_finished)
+        self.download_worker = MovieListWorker(self._max_pages)
+        self.download_worker.signals.download_process_started.connect(self._downloading_started)
+        self.download_worker.signals.movie_data_downloaded.connect(self.process_move_data)
+        self.download_worker.signals.download_process_finished.connect(self._downloading_finished)
 
-        self.pool.start(worker)
+        self.pool.start(self.download_worker)
+
+    def _reset(self):
+        self.beginResetModel()
+        self.items.clear()
+        self.movie_list_changed.emit()
+        self.endResetModel()
 
     def _downloading_started(self):
         self._is_downloading = True
@@ -65,6 +71,21 @@ class MovieList(QAbstractListModel):
         self.items.append(movie_data)
         self.movie_list_changed.emit()
         self.endInsertRows()
+
+    @Slot(str)
+    def refresh_movie_list(self, max_page_count):
+        self._reset()
+        self.download_worker.stop_download()
+
+        self._max_pages = 1
+        if max_page_count:
+            self._max_pages = int(max_page_count)
+
+        # delete cache folder if exists
+        if os.path.exists(settings.CACHE_FOLDER):
+            shutil.rmtree(settings.CACHE_FOLDER, ignore_errors=True)
+
+        self._fetch()
 
     def rowCount(self, parent=QModelIndex):
         return len(self.items)
@@ -109,6 +130,8 @@ class MovieListWorker(QRunnable):
         self.movie = tmdb.Movies()
         self.max_pages = max_pages
 
+        self._can_download = False
+
     def _check_movie(self, movie_data):
         if not movie_data.get("poster_path"):
             return False
@@ -133,8 +156,16 @@ class MovieListWorker(QRunnable):
         current_page = 1
 
         while current_page <= self.max_pages:
+            if not self._can_download:
+                print("Download stopped at getting next page")
+                break
+
             result = self.movie.popular(page=current_page)
             for movie_data in result["results"]:
+                if not self._can_download:
+                    print("Download stopped at getting movie data.")
+                    break
+
                 if not self._check_movie(movie_data):
                     continue
 
@@ -144,11 +175,18 @@ class MovieListWorker(QRunnable):
             current_page += 1
 
         # emit all progress finished signal!
+        print("Download stopped.")
         self.signals.download_process_finished.emit()
 
+    def stop_download(self):
+        print("Stop download...")
+        self._can_download = False
+
     def run(self):
+        print("Download started...")
+        self._can_download = True
         self._cache_data()
 
 
 if __name__ == '__main__':
-    movie_list = MovieList()
+    print(can_download.is_set())
