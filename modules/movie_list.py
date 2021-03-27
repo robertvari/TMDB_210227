@@ -33,6 +33,7 @@ class MovieList(QAbstractListModel):
         self.download_worker.signals.download_process_started.connect(self._downloading_started)
         self.download_worker.signals.movie_data_downloaded.connect(self.process_move_data)
         self.download_worker.signals.download_process_finished.connect(self._downloading_finished)
+        self.download_worker.signals.download_process_stopped.connect(self._refresh_process)
 
         self.pool.start(self.download_worker)
 
@@ -79,7 +80,8 @@ class MovieList(QAbstractListModel):
         if max_page_count:
             self._max_pages = int(max_page_count)
 
-        self.download_worker.signals.download_process_stopped.connect(self._refresh_process)
+        if not self.download_worker.is_working:
+            self._refresh_process()
 
     def _refresh_process(self):
         self._reset()
@@ -134,6 +136,7 @@ class MovieListWorker(QRunnable):
         self.movie = tmdb.Movies()
         self.max_pages = max_pages
 
+        self._is_working = False
         self._can_download = False
 
     def _check_movie(self, movie_data):
@@ -183,16 +186,22 @@ class MovieListWorker(QRunnable):
         # emit all progress finished signal!
         print("Download stopped.")
         self.signals.download_process_finished.emit()
+        self._is_working = False
 
     def stop_download(self):
         print("Stop download...")
         self._can_download = False
 
+    @property
+    def is_working(self):
+        return self._is_working
+
     def run(self):
         print("Download started...")
         self._can_download = True
+        self._is_working = True
         self._cache_data()
 
 
 if __name__ == '__main__':
-    print(can_download.is_set())
+    worker = MovieListWorker()
