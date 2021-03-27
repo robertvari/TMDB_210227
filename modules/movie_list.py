@@ -20,6 +20,7 @@ class MovieList(QAbstractListModel):
     def __init__(self):
         super(MovieList, self).__init__()
         self.items = []
+        self.download_worker = None
         self._is_downloading = False
         self._max_pages = 1
 
@@ -180,6 +181,7 @@ class MovieListWorker(QRunnable):
                 if not self._check_movie(movie_data):
                     continue
 
+                print(f"Downloading poster for {movie_data['title']}")
                 movie_data["local_poster"] = download_image(movie_data["poster_path"])
                 self.signals.movie_data_downloaded.emit(movie_data)
 

@@ -12,4 +12,5 @@ Window {
     MainLayout{
        anchors.fill: parent
     }
+
 }

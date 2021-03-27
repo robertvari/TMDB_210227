@@ -29,7 +29,14 @@ class MovieDB:
 
         if not self.engine.rootObjects():
             sys.exit(-1)
+
+        self.app.lastWindowClosed.connect(self._close_app)
+
         sys.exit(self.app.exec_())
+
+    def _close_app(self):
+        if self.movie_list.download_worker and self.movie_list.download_worker.is_working:
+            self.movie_list.download_worker.stop_download()
 
 
 if __name__ == "__main__":
