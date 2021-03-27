@@ -2,6 +2,11 @@ import QtQuick 2.0
 import QtQuick.Layouts 1.15
 
 Item {
+    id: root
+
+    property int titleSize: 30
+    property int textSize: 16
+
     ColumnLayout{
         anchors.fill: parent
 
@@ -22,10 +27,12 @@ Item {
                 anchors.fill: parent
                 anchors.margins: 20
 
-                Rectangle{
+                Image{
+                    source: Movie.poster
                     Layout.fillHeight: true
-                    implicitWidth: 300
-                    color: "black"
+                    opacity: 1
+
+                    fillMode: Image.PreserveAspectFit
                 }
 
                 Item {
@@ -38,24 +45,45 @@ Item {
                         Text{
                             text: Movie.title
                             font.bold: true
-                            font.pixelSize: 30
+                            font.pixelSize: root.titleSize
                             color: "white"
+
+                            Layout.fillWidth: true
+                            wrapMode: Text.WrapAtWordBoundaryOrAnywhere
                         }
 
                         Text {
-                            text: "02/11/2021 (US) Drama, Thriller 1h 26m"
+                            text: Movie.release_date + " (US) Drama, Thriller 1h 26m"
                             color: "white"
+                            font.pixelSize: root.textSize
+
+                            Layout.fillWidth: true
+                            wrapMode: Text.WrapAtWordBoundaryOrAnywhere
+                        }
+
+                        Text{
+                            text: Movie.tagline
+                            color: "white"
+                            font.pixelSize: root.textSize
+
+                            Layout.fillWidth: true
+                            wrapMode: Text.WrapAtWordBoundaryOrAnywhere
                         }
 
                         Text{
                             text: "Overview"
                             font.bold: true
                             color: "white"
+                            font.pixelSize: root.textSize
                         }
 
                         Text{
-                            text: "Movie overview...."
+                            text: Movie.overview
                             color: "white"
+                            font.pixelSize: root.textSize
+
+                            Layout.fillWidth: true
+                            wrapMode: Text.WrapAtWordBoundaryOrAnywhere
                         }
                     }
 

@@ -1,6 +1,7 @@
 from PySide2.QtCore import QObject, Slot, QUrl, Property, Signal
 from utilities import settings
 import os
+from datetime import datetime
 import tmdbsimple as tmdb
 from dotenv import load_dotenv
 from utilities.downloader import download_image
@@ -52,6 +53,9 @@ class Movie(QObject):
         backdrop_path = download_image(backdrop_url, True)
         return QUrl().fromLocalFile(backdrop_path)
 
+    def _get_poster(self):
+        return self._poster
+
     def _convert_date(self, release_date: str):
         return release_date
 
@@ -61,5 +65,27 @@ class Movie(QObject):
     def _get_backdrop(self):
         return self._backdrop
 
+    def _get_overview(self):
+        return self._overview
+
+    def _get_tagline(self):
+        if self._tagline:
+            return self._tagline
+
+        return ""
+
+    def _get_date(self):
+        if self._release_date:
+            datetime_obj = datetime.strptime(self._release_date, "%Y-%m-%d")
+            return datetime_obj.strftime("%Y %b. %d")
+        return ""
+
     title = Property(str, _get_title, notify=movie_loaded)
+    overview = Property(str, _get_overview, notify=movie_loaded)
+    tagline = Property(str, _get_tagline, notify=movie_loaded)
+    release_date = Property(str, _get_date, notify=movie_loaded)
+    poster = Property(QUrl, _get_poster, notify=movie_loaded)
     backdrop = Property(QUrl, _get_backdrop, notify=movie_loaded)
+
+if __name__ == '__main__':
+    my_date = datetime.fro

@@ -167,21 +167,18 @@ class MovieListWorker(QRunnable):
 
         while current_page <= self.max_pages:
             if not self._can_download:
-                print("Download stopped at getting next page")
                 self.signals.download_process_stopped.emit()
                 break
 
             result = self.movie.popular(page=current_page)
             for movie_data in result["results"]:
                 if not self._can_download:
-                    print("Download stopped at getting movie data.")
                     self.signals.download_process_stopped.emit()
                     break
 
                 if not self._check_movie(movie_data):
                     continue
 
-                print(f"Downloading poster for {movie_data['title']}")
                 movie_data["local_poster"] = download_image(movie_data["poster_path"])
                 self.signals.movie_data_downloaded.emit(movie_data)
 
