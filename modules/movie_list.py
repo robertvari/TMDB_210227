@@ -88,7 +88,9 @@ class MovieList(QAbstractListModel):
 
         # delete cache folder if exists
         if os.path.exists(settings.CACHE_FOLDER):
-            shutil.rmtree(settings.CACHE_FOLDER, ignore_errors=True)
+            poster_files = [os.path.join(settings.CACHE_FOLDER, i) for i in os.listdir(settings.CACHE_FOLDER)]
+            for i in poster_files:
+                os.remove(i)
 
         self._fetch()
 

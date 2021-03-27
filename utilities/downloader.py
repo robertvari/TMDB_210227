@@ -16,9 +16,12 @@ def download_image(image_url, backdrop=False):
     response = requests.get(poster_url, stream=True)
 
     if response.status_code == 200:
-        with open(poster_path, "wb") as f:
-            response.raw.decode_content = True
-            shutil.copyfileobj(response.raw, f)
+        try:
+            with open(poster_path, "wb") as f:
+                response.raw.decode_content = True
+                shutil.copyfileobj(response.raw, f)
+        except FileNotFoundError:
+            print(f"<<<WARNING>>> No such file or directory: {poster_path}")
 
     return poster_path
 
