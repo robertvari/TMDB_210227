@@ -21,7 +21,7 @@ class MovieList(QAbstractListModel):
         super(MovieList, self).__init__()
         self.items = []
         self._is_downloading = False
-        self._max_pages = 1
+        self._max_pages = 10
 
         self.pool = QThreadPool()
         self.pool.setMaxThreadCount(1)
@@ -144,7 +144,7 @@ class MovieListWorker(QRunnable):
             current_page += 1
 
         # emit all progress finished signal!
-        self.signals.download_process_started.emit()
+        self.signals.download_process_finished.emit()
 
     def run(self):
         self._cache_data()
