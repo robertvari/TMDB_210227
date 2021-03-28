@@ -2,12 +2,14 @@ import QtQuick 2.0
 
 Rectangle {
     id: root
-    width: 50
-    height: 50
+    implicitWidth: 50
+    implicitHeight: 50
     color: "#141414"
     radius: width
 
     property int percentage: 50
+
+    onPercentageChanged: canvas.requestPaint()
 
     Canvas {
         id: canvas

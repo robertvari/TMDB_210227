@@ -118,6 +118,11 @@ class Movie(QObject):
     def _get_runtime(self):
         return self._runtime
 
+    def _get_vote_average(self):
+        if not self._vote_average:
+            return 0
+        return self._vote_average
+
     title = Property(str, _get_title, notify=movie_loaded)
     overview = Property(str, _get_overview, notify=movie_loaded)
     tagline = Property(str, _get_tagline, notify=movie_loaded)
@@ -127,3 +132,4 @@ class Movie(QObject):
     language = Property(str, _get_language, notify=movie_loaded)
     genres = Property(str, _get_genres, notify=movie_loaded)
     runtime = Property(str, _get_runtime, notify=movie_loaded)
+    vote_average = Property(int, _get_vote_average, notify=movie_loaded)

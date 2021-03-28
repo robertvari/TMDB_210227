@@ -61,7 +61,13 @@ Item {
                             wrapMode: Text.WrapAtWordBoundaryOrAnywhere
                         }
 
-                        Item{implicitHeight: 30}
+                        Item{implicitHeight: 10}
+
+                        PopularityProgress{
+                            percentage: Movie.vote_average
+                            implicitHeight: 80
+                            implicitWidth: 80
+                        }
 
                         Text{
                             text: Movie.tagline
