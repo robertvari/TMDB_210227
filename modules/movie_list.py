@@ -4,7 +4,8 @@ import tmdbsimple as tmdb
 from dotenv import load_dotenv
 from utilities import settings
 from utilities.downloader import download_image
-import os, shutil, time
+import os
+from datetime import datetime
 
 ENV_PATH = os.path.join(settings.APP_ROOT, ".env")
 load_dotenv(ENV_PATH)
@@ -60,9 +61,13 @@ class MovieList(QAbstractListModel):
         def get_vote_average():
             return int(movie_data.get("vote_average") * 10)
 
+        def get_sorting_date():
+            return datetime.strptime(movie_data.get("release_date"), "%Y-%m-%d")
+
         return {
             "title": movie_data.get("title"),
             "release_date": movie_data.get("release_date"),
+            "sort_date": get_sorting_date(),
             "vote_average": get_vote_average(),
             "poster": QUrl().fromLocalFile(movie_data["local_poster"]),
             "id": movie_data["id"]
@@ -123,6 +128,8 @@ class MovieList(QAbstractListModel):
 
 
 class MovieListProxy(QSortFilterProxyModel):
+    sort_mode_changed = Signal()
+
     def __init__(self):
         super(MovieListProxy, self).__init__()
         self.sort(0, Qt.AscendingOrder)
@@ -151,7 +158,34 @@ class MovieListProxy(QSortFilterProxyModel):
     def lessThan(self, source_left, source_right):
         left_movie = self.sourceModel().data(source_left, Qt.UserRole)
         right_movie = self.sourceModel().data(source_right, Qt.UserRole)
+
+        if self._sort_mode == "release_date":
+            return left_movie["sort_date"] < right_movie["sort_date"]
+
         return left_movie[self._sort_mode] < right_movie[self._sort_mode]
+
+    def _get_current_sorting(self):
+        return self._sort_mode
+
+    def _set_current_sorting(self, sort_mode):
+        if sort_mode == self._sort_mode:
+            if self.sortOrder() == Qt.AscendingOrder:
+                self.sort(0, Qt.DescendingOrder)
+            else:
+                self.sort(0, Qt.AscendingOrder)
+        else:
+            self.sort(0, Qt.AscendingOrder)
+
+        self._sort_mode = sort_mode
+        self.sort_mode_changed.emit()
+
+        self.invalidate()
+
+    def _get_sort_direction(self):
+        return self.sortOrder() == Qt.AscendingOrder
+
+    current_sorting = Property(str, _get_current_sorting, _set_current_sorting, notify=sort_mode_changed)
+    sort_ascending = Property(bool, _get_sort_direction, notify=sort_mode_changed)
 
 
 class WorkerSignals(QObject):
