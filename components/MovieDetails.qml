@@ -53,13 +53,15 @@ Item {
                         }
 
                         Text {
-                            text: Movie.release_date + " (US) Drama, Thriller 1h 26m"
+                            text: Movie.release_date + " (" + Movie.language + ") " + Movie.genres +" " + Movie.runtime
                             color: "white"
                             font.pixelSize: root.textSize
 
                             Layout.fillWidth: true
                             wrapMode: Text.WrapAtWordBoundaryOrAnywhere
                         }
+
+                        Item{implicitHeight: 30}
 
                         Text{
                             text: Movie.tagline
@@ -69,6 +71,8 @@ Item {
                             Layout.fillWidth: true
                             wrapMode: Text.WrapAtWordBoundaryOrAnywhere
                         }
+
+                        Item{implicitHeight: 10}
 
                         Text{
                             text: "Overview"
