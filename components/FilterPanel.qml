@@ -9,9 +9,11 @@ Item {
     ColumnLayout{
         anchors.fill: parent
 
-        TextField{
+        TextField {
             placeholderText: "Search..."
             Layout.fillWidth: true
+
+            onTextChanged: MovieListProxy.set_filter(text)
         }
 
         Text{

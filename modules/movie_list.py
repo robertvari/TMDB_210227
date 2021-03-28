@@ -1,5 +1,5 @@
 from PySide2.QtCore import QAbstractListModel, QModelIndex, Qt, QUrl, \
-    QRunnable, QObject, Signal, QThreadPool, Property, Slot
+    QRunnable, QObject, Signal, QThreadPool, Property, Slot, QSortFilterProxyModel
 import tmdbsimple as tmdb
 from dotenv import load_dotenv
 from utilities import settings
@@ -120,6 +120,33 @@ class MovieList(QAbstractListModel):
     movie_count = Property(int, _get_movie_count, notify=movie_list_changed)
     max_download_count = Property(int, _get_max_download_count, notify=download_started)
     is_downloading = Property(bool, _get_is_downloading, notify=download_progress_changed)
+
+
+class MovieListProxy(QSortFilterProxyModel):
+    def __init__(self):
+        super(MovieListProxy, self).__init__()
+        self.sort(0, Qt.AscendingOrder)
+
+        self._filter = None
+        self._sort_mode = "title"
+
+    @Slot(str)
+    def set_filter(self, movie_name_filter):
+        self._filter = movie_name_filter
+        if not movie_name_filter:
+            self._filter = None
+
+        self.invalidateFilter()
+
+    def filterAcceptsRow(self, source_row:int, source_parent:QModelIndex) -> bool:
+        if not self._filter:
+            return True
+
+        movie_data = self.sourceModel().items[source_row]
+
+        if self._filter.lower() in movie_data.get("title").lower():
+            return True
+        return False
 
 
 class WorkerSignals(QObject):
