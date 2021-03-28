@@ -41,11 +41,5 @@ Rectangle{
             text: "Refresh"
             onClicked: MovieList.refresh_movie_list(max_pages_field.text)
         }
-
-//        Text{
-//            text: "Movie count: " + MovieList.movie_count
-//            color: "white"
-//            Layout.alignment: Qt.AlignRight
-//        }
     }
 }

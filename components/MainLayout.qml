@@ -1,4 +1,4 @@
-import QtQuick 2.0
+import QtQuick 2.15
 import QtQuick.Layouts 1.15
 import "widgets"
 
@@ -63,6 +63,26 @@ Item {
                     Layout.fillWidth: true
                 }
             }
+        }
+
+        Rectangle{
+            Layout.fillWidth: true
+            implicitHeight: 2
+            color: "#05B4E3"
+
+            gradient: Gradient {
+                orientation: Gradient.Horizontal
+                GradientStop { position: 0.0; color: "transparent" }
+                GradientStop { position: 0.5; color: "#05B4E3" }
+                GradientStop { position: 1.0; color: "transparent" }
+            }
+        }
+
+        Text{
+            text: "Movie count: " + MovieList.movie_count
+            font.pixelSize: 16
+            color: "#777777"
+            Layout.alignment: Qt.AlignHCenter
         }
     }
 }
