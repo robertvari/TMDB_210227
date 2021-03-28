@@ -1,6 +1,8 @@
 import QtQuick 2.0
 import QtQuick.Layouts 1.15
 import QtQuick.Controls 1.4
+import "widgets"
+
 
 Rectangle{
     implicitHeight: 64
@@ -37,9 +39,15 @@ Rectangle{
             validator: RegExpValidator{regExp: /[0-9]{1,3}/}
         }
 
-        Button {
-            text: "Refresh"
+        IconButton{
+            size: 30
+            icon: Resources.get_image("refresh.svg")
             onClicked: MovieList.refresh_movie_list(max_pages_field.text)
         }
+
+//        Button {
+//            text: "Refresh"
+//            onClicked: MovieList.refresh_movie_list(max_pages_field.text)
+//        }
     }
 }
