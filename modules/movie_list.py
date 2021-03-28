@@ -138,7 +138,7 @@ class MovieListProxy(QSortFilterProxyModel):
 
         self.invalidateFilter()
 
-    def filterAcceptsRow(self, source_row:int, source_parent:QModelIndex) -> bool:
+    def filterAcceptsRow(self, source_row: int, source_parent: QModelIndex) -> bool:
         if not self._filter:
             return True
 
@@ -147,6 +147,11 @@ class MovieListProxy(QSortFilterProxyModel):
         if self._filter.lower() in movie_data.get("title").lower():
             return True
         return False
+
+    def lessThan(self, source_left, source_right):
+        left_movie = self.sourceModel().data(source_left, Qt.UserRole)
+        right_movie = self.sourceModel().data(source_right, Qt.UserRole)
+        return left_movie[self._sort_mode] < right_movie[self._sort_mode]
 
 
 class WorkerSignals(QObject):
